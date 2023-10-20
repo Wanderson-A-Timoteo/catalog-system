@@ -4,11 +4,12 @@ package br.com.wandersontimoteo.apicatalog.services;
 import br.com.wandersontimoteo.apicatalog.dto.CategoryDTO;
 import br.com.wandersontimoteo.apicatalog.entities.Category;
 import br.com.wandersontimoteo.apicatalog.repositories.CategoryRepository;
-import br.com.wandersontimoteo.apicatalog.services.exceptions.EntityNotFoundException;
+import br.com.wandersontimoteo.apicatalog.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,16 +31,27 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public CategoryDTO findById(Long id) {
         Optional<Category> obj = categoryRepository.findById(id);
-        Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Categoria com id: " + id + ", não encontrada"));
+        Category entity = obj.orElseThrow(() -> new ResourceNotFoundException("Categoria com id: " + id + ", não encontrada"));
         return new CategoryDTO(entity);
     }
 
     @Transactional
-    public CategoryDTO insert(CategoryDTO dto) {
+    public CategoryDTO insert(CategoryDTO categoryDTO) {
         Category entity = new Category();
-        entity.setName(dto.getName());
+        entity.setName(categoryDTO.getName());
         entity = categoryRepository.save(entity);
         return new CategoryDTO(entity);
     }
 
+    @Transactional
+    public CategoryDTO update(Long id, CategoryDTO categoryDTO) {
+        try {
+            Category entity = categoryRepository.getOne(id);
+            entity.setName(categoryDTO.getName());
+            entity = categoryRepository.save(entity);
+            return new CategoryDTO(entity);
+        } catch (EntityNotFoundException error) {
+            throw new ResourceNotFoundException("Categoria com id: " + id + ", não encontrada para atualização");
+        }
+    }
 }
