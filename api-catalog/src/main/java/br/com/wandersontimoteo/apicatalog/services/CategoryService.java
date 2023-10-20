@@ -4,8 +4,11 @@ package br.com.wandersontimoteo.apicatalog.services;
 import br.com.wandersontimoteo.apicatalog.dto.CategoryDTO;
 import br.com.wandersontimoteo.apicatalog.entities.Category;
 import br.com.wandersontimoteo.apicatalog.repositories.CategoryRepository;
+import br.com.wandersontimoteo.apicatalog.services.exceptions.DatabaseException;
 import br.com.wandersontimoteo.apicatalog.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +54,17 @@ public class CategoryService {
             entity = categoryRepository.save(entity);
             return new CategoryDTO(entity);
         } catch (EntityNotFoundException error) {
-            throw new ResourceNotFoundException("Categoria com id: " + id + ", não encontrada para atualização");
+            throw new ResourceNotFoundException("Categoria com id: " + id + ", não encontrada para atualizar");
+        }
+    }
+
+    public void delete(Long id) {
+        try {
+            categoryRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException error) {
+            throw new ResourceNotFoundException("Categoria com id: " + id + ", não encontrada para excluir");
+        } catch (DataIntegrityViolationException err) {
+            throw new DatabaseException("Não é possível excluir esta categoria, pois existe um ou mais produtos cadastrados no banco de dados com esta categoria");
         }
     }
 }
