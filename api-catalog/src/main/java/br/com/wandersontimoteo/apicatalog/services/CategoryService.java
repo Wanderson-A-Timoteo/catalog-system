@@ -4,6 +4,7 @@ package br.com.wandersontimoteo.apicatalog.services;
 import br.com.wandersontimoteo.apicatalog.dto.CategoryDTO;
 import br.com.wandersontimoteo.apicatalog.entities.Category;
 import br.com.wandersontimoteo.apicatalog.repositories.CategoryRepository;
+import br.com.wandersontimoteo.apicatalog.services.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public CategoryDTO findById(Long id) {
         Optional<Category> obj = categoryRepository.findById(id);
-        Category entity = obj.get();
+        Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Categoria com id: " + id + ", não encontrada"));
         return new CategoryDTO(entity);
     }
 
