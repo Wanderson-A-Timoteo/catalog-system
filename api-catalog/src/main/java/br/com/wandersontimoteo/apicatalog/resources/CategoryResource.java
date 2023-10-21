@@ -13,7 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/categories")
+@RequestMapping(value = "/categorias")
 public class CategoryResource {
 
     @Autowired
@@ -21,12 +21,12 @@ public class CategoryResource {
 
     @GetMapping
     public ResponseEntity<Page<CategoryDTO>> findAll(
-        @RequestParam(value = "page", defaultValue = "0") Integer page,
-        @RequestParam(value = "linesPerPage", defaultValue = "10") Integer linesPerPage,
-        @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
-        @RequestParam(value = "direction", defaultValue = "ASC") String direction
+        @RequestParam(value = "pagina", defaultValue = "0") Integer pagina,
+        @RequestParam(value = "linhasPorPagina", defaultValue = "10") Integer linhasPorPagina,
+        @RequestParam(value = "ordenarPor", defaultValue = "name") String ordenarPor,
+        @RequestParam(value = "direcao", defaultValue = "ASC") String direcao
     ) {
-        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+        PageRequest pageRequest = PageRequest.of(pagina, linhasPorPagina, Sort.Direction.valueOf(direcao), ordenarPor);
 
         Page<CategoryDTO> listCategory = categoryService.findAllPaged(pageRequest);
         return ResponseEntity.ok().body(listCategory);
