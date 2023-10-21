@@ -32,7 +32,8 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public CategoryDTO findById(Long id) {
         Optional<Category> obj = categoryRepository.findById(id);
-        Category entity = obj.orElseThrow(() -> new ResourceNotFoundException("Categoria com id: " + id + ", não encontrada"));
+        Category entity = obj.orElseThrow(() -> new ResourceNotFoundException("Categoria com id: " + id +
+                ", não encontrada"));
         return new CategoryDTO(entity);
     }
 
@@ -62,7 +63,9 @@ public class CategoryService {
         } catch (EmptyResultDataAccessException error) {
             throw new ResourceNotFoundException("Categoria com id: " + id + ", não encontrada para excluir");
         } catch (DataIntegrityViolationException err) {
-            throw new DatabaseException("Não é possível excluir esta categoria, pois existe um ou mais produtos cadastrados no banco de dados com esta categoria");
+            throw new DatabaseException("Não é possível excluir a categoria de id: "+ id +
+                    ", pois existe um ou mais produtos cadastrados no banco de dados"+
+                    " com esta categoria");
         }
     }
 }

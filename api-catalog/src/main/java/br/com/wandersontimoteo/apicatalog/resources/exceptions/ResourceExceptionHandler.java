@@ -17,7 +17,7 @@ public class ResourceExceptionHandler {
     public ResponseEntity<StandardError> entityNotFound(ResourceNotFoundException error, HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         StandardError err = new StandardError();
-        err.setTimetamp(Instant.now());
+        err.setTimestamp(Instant.now());
         err.setStatus(status.value());
         err.setError("Recurso não encontrado");
         err.setMessage(error.getMessage());
@@ -30,7 +30,7 @@ public class ResourceExceptionHandler {
     public ResponseEntity<StandardError> database(DatabaseException error, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         StandardError err = new StandardError();
-        err.setTimetamp(Instant.now());
+        err.setTimestamp(Instant.now());
         err.setStatus(status.value());
         err.setError("Violação de integridade do Banco de Dados");
         err.setMessage(error.getMessage());
