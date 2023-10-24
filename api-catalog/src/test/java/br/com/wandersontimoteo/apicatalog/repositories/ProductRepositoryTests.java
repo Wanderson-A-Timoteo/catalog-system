@@ -1,6 +1,7 @@
 package br.com.wandersontimoteo.apicatalog.repositories;
 
 import br.com.wandersontimoteo.apicatalog.entities.Product;
+import br.com.wandersontimoteo.apicatalog.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,25 @@ public class ProductRepositoryTests {
 
     private long existingId;
     private long nonExistingId;
+    private long countTotalProducts;
 
     @BeforeEach
     void setUp() throws Exception {
         existingId = 1L;
         nonExistingId = 1000L;
+        countTotalProducts = 25L;
+    }
+
+    @Test
+    public void saveShouldPersistWithAutoincrementWhenIdIsNull() {
+
+        Product product = Factory.createProduct();
+        product.setId(null);
+
+        product = productRepository.save(product);
+
+        assertNotNull(product.getId());
+        assertEquals(countTotalProducts + 1, product.getId());
     }
 
     @Test
