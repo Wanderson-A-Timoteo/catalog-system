@@ -53,6 +53,16 @@ public class ProductRepositoryTests {
     }
 
     @Test
+    public void findByIdShouldReturnOptionalProductEmptyWhenIdDoesNotExist() {
+
+        productRepository.findById(nonExistingId);
+
+        Optional<Product> result = productRepository.findById(nonExistingId);
+        assertTrue(result.isEmpty());
+
+    }
+
+    @Test
     public void deleteShouldDeleteObjectWhenIdExists() {
 
         productRepository.deleteById(existingId);
