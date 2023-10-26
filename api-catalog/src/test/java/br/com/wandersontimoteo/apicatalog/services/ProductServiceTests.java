@@ -34,4 +34,14 @@ public class ProductServiceTests {
 
     }
 
+    @Test
+    public void deleteShouldDoNothingWhenIdExists() {
+        Assertions.assertDoesNotThrow(() -> {
+            productService.delete(existingId);
+        });
+
+        Mockito.verify(productRepository, Mockito.times(1)).deleteById(existingId);
+
+    }
+
 }
