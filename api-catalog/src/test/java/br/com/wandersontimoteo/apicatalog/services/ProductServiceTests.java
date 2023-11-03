@@ -1,6 +1,7 @@
 package br.com.wandersontimoteo.apicatalog.services;
 
 import br.com.wandersontimoteo.apicatalog.repositories.ProductRepository;
+import br.com.wandersontimoteo.apicatalog.services.exceptions.DatabaseException;
 import br.com.wandersontimoteo.apicatalog.services.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,7 @@ public class ProductServiceTests {
         Mockito.doNothing().when(productRepository).deleteById(existingId);
         Mockito.doThrow(EmptyResultDataAccessException.class).when(productRepository).deleteById(nonExistingId);
         Mockito.doThrow(DataIntegrityViolationException.class).when(productRepository).deleteById(dependentId);
+
     }
 
     @Test
@@ -56,6 +58,17 @@ public class ProductServiceTests {
         });
 
         Mockito.verify(productRepository, Mockito.times(1)).deleteById(nonExistingId);
+
+    }
+
+    @Test
+    public void deleteShouldThrowDatabaseExceptionWhenDependentId() {
+
+        Assertions.assertThrows(DatabaseException.class, () -> {
+            productService.delete(dependentId);
+        });
+
+        Mockito.verify(productRepository, Mockito.times(1)).deleteById(dependentId);
 
     }
 
