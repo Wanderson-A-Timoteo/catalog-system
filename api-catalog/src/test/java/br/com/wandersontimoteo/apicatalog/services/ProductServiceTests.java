@@ -111,6 +111,15 @@ public class ProductServiceTests {
     }
 
     @Test
+    public void updateShouldReturnResourceNotFoundExceptionWhenIdDoesNotExist() {
+        ProductDTO productDTO = Factory.createProductDTO();
+
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            productService.update(nonExistingId, productDTO);
+        });
+    }
+
+    @Test
     public void deleteShouldDoNothingWhenIdExists() {
 
         Assertions.assertDoesNotThrow(() -> {
