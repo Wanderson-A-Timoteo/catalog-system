@@ -1,7 +1,9 @@
 package br.com.wandersontimoteo.apicatalog.services;
 
 import br.com.wandersontimoteo.apicatalog.dto.ProductDTO;
+import br.com.wandersontimoteo.apicatalog.entities.Category;
 import br.com.wandersontimoteo.apicatalog.entities.Product;
+import br.com.wandersontimoteo.apicatalog.repositories.CategoryRepository;
 import br.com.wandersontimoteo.apicatalog.repositories.ProductRepository;
 import br.com.wandersontimoteo.apicatalog.services.exceptions.DatabaseException;
 import br.com.wandersontimoteo.apicatalog.services.exceptions.ResourceNotFoundException;
@@ -34,6 +36,9 @@ public class ProductServiceTests {
     @Mock
     private ProductRepository productRepository;
 
+    @Mock
+    private CategoryRepository categoryRepository;
+
     private long existingId;
     private long nonExistingId;
     private long dependentId;
@@ -57,9 +62,13 @@ public class ProductServiceTests {
         Mockito.when(productRepository.findById(existingId)).thenReturn(Optional.of(product));
         Mockito.when(productRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
+        Mockito.when(productRepository.getOne(existingId)).thenReturn(product);
+        Mockito.when(categoryRepository.getOne(existingId)).thenReturn(new Category(1L, "Nome"));
+
         Mockito.doNothing().when(productRepository).deleteById(existingId);
         Mockito.doThrow(EmptyResultDataAccessException.class).when(productRepository).deleteById(nonExistingId);
         Mockito.doThrow(DataIntegrityViolationException.class).when(productRepository).deleteById(dependentId);
+        Mockito.doThrow(ResourceNotFoundException.class).when(productRepository).getOne(nonExistingId);
 
     }
 
@@ -87,6 +96,17 @@ public class ProductServiceTests {
 
         Assertions.assertNotNull(result);
         Mockito.verify(productRepository, Mockito.times(1)).findAll(pageable);
+
+    }
+
+    @Test
+    public void updateShouldReturnProductDTOWhenIdExist() {
+
+        ProductDTO productDTO = Factory.createProductDTO();
+
+        ProductDTO result = productService.update(existingId, productDTO);
+
+        Assertions.assertNotNull(result);
 
     }
 
