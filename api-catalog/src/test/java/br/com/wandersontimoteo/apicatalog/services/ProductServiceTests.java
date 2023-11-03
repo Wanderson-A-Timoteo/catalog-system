@@ -48,6 +48,8 @@ public class ProductServiceTests {
         product = Factory.createProduct();
         page = new PageImpl<>(List.of(product));
 
+        Mockito.when(productRepository.getOne(existingId)).thenReturn(product);
+
         Mockito.when(productRepository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
 
         Mockito.when(productRepository.save(ArgumentMatchers.any())).thenReturn(product);
@@ -59,6 +61,14 @@ public class ProductServiceTests {
         Mockito.doThrow(EmptyResultDataAccessException.class).when(productRepository).deleteById(nonExistingId);
         Mockito.doThrow(DataIntegrityViolationException.class).when(productRepository).deleteById(dependentId);
 
+    }
+
+    @Test
+    public void findByIdShouldReturnProductDTOWhenIdExists() {
+
+        ProductDTO productDTO = productService.findById(existingId);
+
+        Assertions.assertNotNull(productDTO);
     }
 
     @Test
