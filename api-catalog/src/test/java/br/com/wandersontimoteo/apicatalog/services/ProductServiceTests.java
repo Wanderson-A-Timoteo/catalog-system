@@ -1,5 +1,6 @@
 package br.com.wandersontimoteo.apicatalog.services;
 
+import br.com.wandersontimoteo.apicatalog.dto.ProductDTO;
 import br.com.wandersontimoteo.apicatalog.entities.Product;
 import br.com.wandersontimoteo.apicatalog.repositories.ProductRepository;
 import br.com.wandersontimoteo.apicatalog.services.exceptions.DatabaseException;
@@ -15,7 +16,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -58,7 +61,17 @@ public class ProductServiceTests {
 
     }
 
+    @Test
+    public void findAllPagedShouldReturnPage() {
 
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<ProductDTO> result = productService.findAllPaged(pageable);
+
+        Assertions.assertNotNull(result);
+        Mockito.verify(productRepository, Mockito.times(1)).findAll(pageable);
+
+    }
 
     @Test
     public void deleteShouldDoNothingWhenIdExists() {
