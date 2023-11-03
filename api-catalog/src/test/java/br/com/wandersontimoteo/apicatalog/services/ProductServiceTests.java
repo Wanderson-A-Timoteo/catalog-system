@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 public class ProductServiceTests {
@@ -47,6 +48,8 @@ public class ProductServiceTests {
         Mockito.when(productRepository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
 
         Mockito.when(productRepository.save(ArgumentMatchers.any())).thenReturn(product);
+
+        Mockito.when(productRepository.findById(existingId)).thenReturn(Optional.of(product));
 
         Mockito.doNothing().when(productRepository).deleteById(existingId);
         Mockito.doThrow(EmptyResultDataAccessException.class).when(productRepository).deleteById(nonExistingId);
