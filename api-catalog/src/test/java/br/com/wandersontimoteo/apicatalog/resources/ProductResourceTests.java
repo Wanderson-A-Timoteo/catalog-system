@@ -3,6 +3,7 @@ package br.com.wandersontimoteo.apicatalog.resources;
 
 import br.com.wandersontimoteo.apicatalog.dto.ProductDTO;
 import br.com.wandersontimoteo.apicatalog.services.ProductService;
+import br.com.wandersontimoteo.apicatalog.services.exceptions.ResourceNotFoundException;
 import br.com.wandersontimoteo.apicatalog.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,8 @@ public class ProductResourceTests {
         Mockito.when(productService.findAllPaged(ArgumentMatchers.any())).thenReturn(page);
 
         Mockito.when(productService.findById(existingId)).thenReturn(productDTO);
+        Mockito.when(productService.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
+
     }
 
     @Test
