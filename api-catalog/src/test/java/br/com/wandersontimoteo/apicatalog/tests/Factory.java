@@ -12,6 +12,7 @@ public class Factory {
     public static Product createProduct() {
 
         Product product = new Product();
+        product.setId(1L);
         product.setName("Phone");
         product.setDescription("Good Phone");
         product.setPrice(BigDecimal.valueOf(800.0));

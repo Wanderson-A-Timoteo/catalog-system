@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
@@ -62,4 +63,19 @@ public class ProductResourceTests {
         resultActions.andExpect(status().isOk());
 
     }
+
+    @Test
+    public void findByIdShouldReturnProductWhenIdExists() throws Exception {
+
+        ResultActions resultActions =
+                mockMvc.perform(get("/produtos/{id}", existingId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(jsonPath("$.id").exists());
+        resultActions.andExpect(jsonPath("$.name").exists());
+        resultActions.andExpect(jsonPath("$.description").exists());
+
+    }
+
 }
