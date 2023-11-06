@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,20 +30,33 @@ public class ProductResourceTests {
     @MockBean
     private ProductService productService;
 
+    private Long existingId;
+    private Long nonExistingId;
     private ProductDTO productDTO;
     private PageImpl<ProductDTO> page;
 
     @BeforeEach
     void setUp() throws Exception {
 
+        existingId = 1L;
+        nonExistingId = 2L;
+
         productDTO = Factory.createProductDTO();
         page = new PageImpl<>(List.of(productDTO));
 
         Mockito.when(productService.findAllPaged(ArgumentMatchers.any())).thenReturn(page);
+
+        Mockito.when(productService.findById(existingId)).thenReturn(productDTO);
     }
 
     @Test
     public void findAllShouldReturnPage() throws Exception {
-        mockMvc.perform(get("/produtos")).andExpect(status().isOk());
+
+        ResultActions resultActions =
+                mockMvc.perform(get("/produtos")
+                    .accept(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isOk());
+
     }
 }
