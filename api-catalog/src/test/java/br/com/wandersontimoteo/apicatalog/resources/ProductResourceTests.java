@@ -78,4 +78,14 @@ public class ProductResourceTests {
 
     }
 
+    @Test
+    public void findByIdShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
+
+        ResultActions resultActions =
+                mockMvc.perform(get("/produtos/{id}", nonExistingId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        resultActions.andExpect(status().isNotFound());
+
+    }
 }
